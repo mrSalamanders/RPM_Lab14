@@ -3,11 +3,12 @@
 #include <QJsonObject>
 #include <QFile>
 #include <QDir>
+#include <list>
 
 
 /// Тут нужно поменять директорию
 /// Нужно вписать путь к папке с файлом сообщений
-#define IIYTb "C:/Users/Nikita/Desktop/not-simple-server"
+#define IIYTb "C:/Users/Nikita/Desktop/not-simple-server-FINAL"
 
 ///
 /// @brief Это конструктор класса Server
@@ -102,20 +103,29 @@ void Server::runClientAction() {
 /// @brief Этот слот срабатывает, когда пользователь отключается
 ///
 void Server::userLeft() {
+    qDebug() << "Started deleting";
     for (auto i = users.begin(); i != users.end(); i++) {
         if (*i == sender()) {
-            QTcpSocket *sok = *(&i)->_Unwrapped();
+            qDebug() << "Got to QTcpSocket";
+            QTcpSocket *kek = (*i);
+            qDebug() << "BTW sok is: ";
+            qDebug() << kek;
+            qDebug() << "Got to erase";
             users.erase(i);
-            sok->deleteLater();
+            qDebug() << "Got to deletion";
+            (kek)->deleteLater();
+            qDebug() << "Got past deletion";
             break;
         }
     }
+
     for (auto i = users.begin(); i != users.end(); i++) {
         QByteArray bA = SystemCall("User left our chat =(");
-        QTcpSocket *sok = *(&i)->_Unwrapped();
+        QTcpSocket *sok = (*i);
         sok->write(bA);
         sok->write("\n");
     }
+    qDebug() << "Finished telling";
 }
 
 ///

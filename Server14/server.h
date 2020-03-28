@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QtNetwork>
+#include <list>
 
 class Server : public QObject
 {
