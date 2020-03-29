@@ -5,17 +5,13 @@
 #include <QDir>
 #include <list>
 
-
-/// Тут нужно поменять директорию
-/// Нужно вписать путь к папке с файлом сообщений
-#define IIYTb "C:/Users/Nikita/Desktop/not-simple-server-FINAL"
-
 ///
 /// @brief Это конструктор класса Server
 /// @param parent принимает в качестве аргумента ссылку на объект-родитель
 ///
 Server::Server(QObject *parent) : QObject(parent) {
-    directory.setPath(IIYTb);
+    directory.setPath(directory.currentPath());
+    qDebug() << directory.currentPath();
     filepath = directory.absoluteFilePath("archive.txt");
     tcpServer = new QTcpServer(this);
     connect(tcpServer, &QTcpServer::newConnection, this, &Server::connectUser);
@@ -35,7 +31,8 @@ Server::Server(QObject *parent) : QObject(parent) {
             someList.push_back(data);
         };
     } else {
-        qDebug() << "Unable to open file to read messages.";
+        qDebug() << "File not found. Creating new one.";
+        arch.open(QIODevice::ReadWrite);
     }
     arch.close();
 }
@@ -103,18 +100,12 @@ void Server::runClientAction() {
 /// @brief Этот слот срабатывает, когда пользователь отключается
 ///
 void Server::userLeft() {
-    qDebug() << "Started deleting";
     for (auto i = users.begin(); i != users.end(); i++) {
         if (*i == sender()) {
-            qDebug() << "Got to QTcpSocket";
             QTcpSocket *kek = (*i);
-            qDebug() << "BTW sok is: ";
             qDebug() << kek;
-            qDebug() << "Got to erase";
             users.erase(i);
-            qDebug() << "Got to deletion";
             (kek)->deleteLater();
-            qDebug() << "Got past deletion";
             break;
         }
     }
@@ -125,7 +116,6 @@ void Server::userLeft() {
         sok->write(bA);
         sok->write("\n");
     }
-    qDebug() << "Finished telling";
 }
 
 ///
