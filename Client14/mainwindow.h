@@ -30,6 +30,11 @@ public slots:
      * @brief connectUnsuccess функция, реализующая действия при невозможности подключения к серверу
      */
     void connectUnsuccess();
+    /**
+     * @brief handleError функция-обработчик ошибки сокета
+     * @param socketError ошибка сокета
+     */
+    void handleError(QAbstractSocket::SocketError socketError);
 private:
     /**
      * @brief ui юай

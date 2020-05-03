@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::sendButtonClick);
     connect(ui->lineEdit, &QLineEdit::returnPressed, this, &MainWindow::sendButtonClick);
     connect(cl, &Client::enemySpotted, ui->textEdit, &QTextEdit::append);
+    connect(cl->socketClient, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error), this, &MainWindow::handleError);
 }
 
 MainWindow::~MainWindow()
@@ -58,6 +59,12 @@ void MainWindow::sendButtonClick()
 void MainWindow::connectUnsuccess()
 {
     ui->textEdit->setText("<font color='grey'>Cannot connect to server</font>");
+}
+
+void MainWindow::handleError(QAbstractSocket::SocketError socketError)
+{
+    qDebug() << socketError;
+    connectUnsuccess();
 }
 
 
